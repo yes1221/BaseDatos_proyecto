@@ -6,7 +6,39 @@ from tkinter import messagebox
 from tkinter import simpledialog
 
 # Conectar a la base de datos
-conn = sqlite3.connect('C:\Proyecto\Hospital.db')
+conn = sqlite3.connect('Hospital.db')
+# Función para crear las tablas si no existen
+def crear_tablas():
+    conn.execute('''
+    CREATE TABLE IF NOT EXISTS pacientes (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        codigo TEXT UNIQUE,
+        nombre TEXT,
+        edad INTEGER
+    )
+    ''')
+    conn.execute('''
+    CREATE TABLE IF NOT EXISTS doctores (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        nombre TEXT,
+        especialidad TEXT
+    )
+    ''')
+    conn.execute('''
+    CREATE TABLE IF NOT EXISTS citas (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        paciente_id INTEGER,
+        fecha TEXT,
+        hora TEXT,
+        doctor TEXT,
+        FOREIGN KEY(paciente_id) REFERENCES pacientes(id)
+    )
+    ''')
+    conn.commit()
+
+# Crear las tablas al iniciar la aplicación
+crear_tablas()
+
 
 # Función para generar un código personal aleatorio para pacientes nuevos
 def generar_codigo():
